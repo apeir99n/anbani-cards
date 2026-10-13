@@ -1,13 +1,14 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Анбани — карточки</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@500;700&family=Noto+Sans+Georgian:wght@400;600&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@500;700&family=Noto+Sans+Georgian:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-/* Layout: одна колонка — шапка с XP, выбор юнита, карточка, кнопки оценки, «стена кирпичей» прогресса */
+/* Layout: одна колонка — шапка с XP, вкладки (буквы / числа / формы), юниты, карточка, кнопки оценки, «стена кирпичей», справка */
 :root{
   --bg:#f6efe8; --surface:#fffaf5; --line:#e6d6c8; --fg:#2b1b17; --muted:#7d665d;
   --brick:#7b2d26; --brick-2:#a3473c; --on-brick:#fff6ef;
+  --olive:#56692a; --olive-bg:#eef0dc;
   --clay:#e9d3c0; --clay-2:#d9ab8c; --clay-3:#c07a5c; --clinker:#7b2d26;
   --good:#3f7a4a; --bad:#b4442f;
   --shadow:0 1px 0 rgba(123,45,38,.06),0 12px 30px -14px rgba(123,45,38,.35);
@@ -18,17 +19,20 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#1c1412; --surface:#271c19; --line:#3d2c27; --fg:#f3e6dd; --muted:#b39a8f;
   --brick:#d06a5c; --brick-2:#e2867a; --on-brick:#1c1412;
+  --olive:#b3c777; --olive-bg:#2c2f1c;
   --clay:#3a2b26; --clay-2:#6a4636; --clay-3:#9b5a45; --clinker:#d06a5c;
   --good:#7cc08a; --bad:#e2786a; --shadow:0 12px 30px -14px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1c1412; --surface:#271c19; --line:#3d2c27; --fg:#f3e6dd; --muted:#b39a8f;
   --brick:#d06a5c; --brick-2:#e2867a; --on-brick:#1c1412;
+  --olive:#b3c777; --olive-bg:#2c2f1c;
   --clay:#3a2b26; --clay-2:#6a4636; --clay-3:#9b5a45; --clinker:#d06a5c;
   --good:#7cc08a; --bad:#e2786a; --shadow:0 12px 30px -14px rgba(0,0,0,.6); color-scheme:dark}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:15px;line-height:1.5}
-.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:flex;flex-direction:column;gap:18px}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:flex;flex-direction:column;gap:16px}
+.ka{font-family:var(--f-geo-sans)}
 
 header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .logo{font-weight:800;font-size:20px;letter-spacing:-.01em;color:var(--brick)}
@@ -38,28 +42,34 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .chip{display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-weight:700;font-size:13px;font-variant-numeric:tabular-nums}
 .chip i{font-style:normal;color:var(--muted);font-weight:600}
 
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--clay);border-radius:14px}
+.tab{border:none;background:none;border-radius:10px;padding:8px 6px;font:700 14px var(--f-ui);color:var(--muted);cursor:pointer;line-height:1.2}
+.tab span{display:block;font:600 12px var(--f-geo-sans);opacity:.8}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--brick);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
 .units{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .units::-webkit-scrollbar{display:none}
 .unit{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:8px 12px;font:600 13px var(--f-ui);cursor:pointer;text-align:left}
-.unit span{display:block;font-family:var(--f-geo-sans);font-weight:400;color:var(--muted);font-size:13px;letter-spacing:.06em}
+.unit span{display:block;font-family:var(--f-geo-sans);font-weight:400;color:var(--muted);font-size:12px;letter-spacing:.03em}
 .unit[aria-pressed="true"]{background:var(--brick);border-color:var(--brick);color:var(--on-brick)}
 .unit[aria-pressed="true"] span{color:var(--on-brick);opacity:.8}
-.unit:focus-visible,button:focus-visible{outline:3px solid var(--brick-2);outline-offset:2px}
+.unit:focus-visible,button:focus-visible,.card:focus-visible{outline:3px solid var(--brick-2);outline-offset:2px}
 
 .bar{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .track{flex:1;height:8px;border-radius:99px;background:var(--clay);overflow:hidden}
 .track div{height:100%;width:0;background:var(--brick);border-radius:99px;transition:width .3s}
-.dir{border:none;background:none;color:var(--brick);font:700 13px var(--f-ui);cursor:pointer;padding:4px}
+.dir{border:none;background:none;color:var(--brick);font:700 13px var(--f-ui);cursor:pointer;padding:4px;white-space:nowrap}
 
 .stage{perspective:1400px}
-.card{position:relative;width:100%;aspect-ratio:4/4.4;max-height:460px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.card{position:relative;width:100%;height:clamp(400px,112vw,460px);cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.deck-forms .card{height:clamp(500px,135vw,540px)}
 .card.flipped{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 20px 40px;text-align:center;overflow:hidden}
 .back{transform:rotateY(180deg)}
 .tag{position:absolute;top:16px;left:18px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .tag.r{left:auto;right:18px}
 .big{font-family:var(--f-geo);font-weight:500;font-size:clamp(120px,40vw,190px);line-height:1;color:var(--brick)}
-.hint{position:absolute;bottom:18px;font-size:12px;color:var(--muted)}
+.hint{position:absolute;bottom:16px;left:0;right:0;font-size:12px;color:var(--muted)}
 .sound-front{font-size:clamp(48px,14vw,72px);font-weight:800;color:var(--brick);line-height:1}
 .sound-front small{display:block;font-size:16px;font-weight:600;color:var(--muted);margin-top:10px}
 
@@ -70,13 +80,49 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .back .name em{font-style:normal;font-family:var(--f-geo-sans);font-weight:400;color:var(--muted);font-size:16px;margin-left:6px}
 .back .ipa{font-size:15px;color:var(--muted)}
 .back .ipa b{color:var(--fg);font-size:18px}
-.note{margin-top:10px;font-size:13px;color:var(--muted);max-width:34ch}
-.word{margin-top:22px;width:100%;border-top:1px dashed var(--line);padding-top:18px}
-.word .ka{font-family:var(--f-geo-sans);font-size:30px;font-weight:600;letter-spacing:.01em}
-.word .ka mark{background:none;color:var(--brick);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
+.note{margin-top:10px;font-size:13px;color:var(--muted);max-width:36ch}
+.word{margin-top:20px;width:100%;border-top:1px dashed var(--line);padding-top:16px}
+.word .w{font-family:var(--f-geo-sans);font-size:30px;font-weight:600}
+.word .w mark{background:none;color:var(--brick);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .word .tr{font-size:15px;color:var(--muted);margin-top:4px}
 .word .tr b{color:var(--fg);font-weight:600}
-.say{margin-top:12px;border:1px solid var(--line);background:none;color:var(--brick);border-radius:999px;padding:6px 14px;font:700 13px var(--f-ui);cursor:pointer}
+.say{margin-top:10px;border:1px solid var(--line);background:none;color:var(--brick);border-radius:999px;padding:6px 14px;font:700 13px var(--f-ui);cursor:pointer}
+
+/* числа */
+.num-big{font-weight:800;font-size:clamp(100px,32vw,160px);line-height:1;color:var(--brick);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.num-mid{font-weight:800;font-size:56px;line-height:1;color:var(--brick);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.geo-word{font-family:var(--f-geo-sans);font-weight:700;font-size:clamp(26px,8vw,38px);line-height:1.25;overflow-wrap:anywhere;max-width:100%}
+.seg{display:inline}
+.seg.m{color:var(--olive)}
+.seg.t{color:var(--brick)}
+.seg.d{color:var(--muted)}
+.seg.r{color:var(--fg)}
+.formula{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.formula span{padding:3px 9px;border-radius:8px;background:var(--bg);border:1px solid var(--line)}
+.formula .op{border:none;background:none;padding:3px 0;color:var(--muted)}
+
+/* формы */
+.vchip{display:inline-flex;gap:8px;align-items:baseline;padding:6px 12px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:14px;font-weight:600}
+.vchip b{font-family:var(--f-geo-sans);font-weight:700;color:var(--brick)}
+.pron{font-family:var(--f-geo);font-size:clamp(56px,18vw,80px);line-height:1.1;color:var(--brick);margin-top:18px}
+.pron-ru{font-size:20px;font-weight:800;margin-top:4px}
+.pron-ru small{display:block;font-size:13px;font-weight:500;color:var(--muted)}
+.ans{font-family:var(--f-geo-sans);font-weight:700;font-size:clamp(28px,8.5vw,38px);line-height:1.2}
+.ans .p{color:var(--muted);font-weight:600;margin-right:8px}
+.ans-tr{color:var(--muted);font-size:14px;margin-top:2px}
+mark.mA{background:none;color:var(--brick);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+mark.mB{background:none;color:var(--olive);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+.para{margin-top:12px;width:100%;max-width:340px;border-collapse:collapse;font-size:13px;text-align:left}
+.para td{padding:3px 6px;border-bottom:1px solid var(--line)}
+.para td:nth-child(1){color:var(--muted);width:58px}
+.para td:nth-child(2){font-family:var(--f-geo-sans);color:var(--muted)}
+.para td:nth-child(3){font-family:var(--f-geo-sans);font-weight:700;font-size:14px}
+.para td:nth-child(4){color:var(--muted);font-size:12px}
+.para tr.on td{background:var(--bg)}
+.para tr.on td:nth-child(3){color:var(--brick)}
+.ex{margin-top:12px;font-size:14px;max-width:36ch}
+.ex .g{font-family:var(--f-geo-sans);font-weight:600}
+.ex .r{color:var(--muted)}
 
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .actions button{border:none;border-radius:16px;padding:15px 10px;font:800 16px var(--f-ui);cursor:pointer;transition:transform .1s}
@@ -86,76 +132,106 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .yes{background:var(--brick);color:var(--on-brick)}
 .flipbtn{grid-column:1/-1;background:var(--brick);color:var(--on-brick)}
 
-.wall-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.wall-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
 h2{font-size:15px;margin:0;font-weight:800}
+h2 span{color:var(--muted);font-weight:600}
 .legend{display:flex;gap:10px;font-size:11px;color:var(--muted);flex-wrap:wrap}
 .legend span{display:flex;align-items:center;gap:4px}
 .legend i{width:12px;height:8px;border-radius:2px;display:inline-block}
-.wall{display:flex;flex-wrap:wrap;gap:4px}
-.wall .b{flex:1 0 calc(100% / 9 - 4px);min-width:28px;height:30px;border-radius:4px;display:grid;place-items:center;font-family:var(--f-geo-sans);font-size:15px;font-weight:600;border:none;cursor:default;transition:background .3s}
-.wall .row2{width:calc(100%/18)}
+.wall{display:grid;gap:4px;margin-top:10px}
+.wall .b{min-width:0;height:30px;border-radius:4px;display:grid;place-items:center;font-family:var(--f-geo-sans);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;overflow:hidden;white-space:nowrap;transition:background .3s}
+.deck-numbers .wall .b{height:26px;font-family:var(--f-ui);font-size:12px}
+.deck-forms .wall .b{height:26px;font-size:11px;padding:0 2px}
 .l0{background:var(--clay);color:var(--muted)}
 .l1{background:var(--clay-2);color:var(--fg)}
 .l2{background:var(--clay-3);color:var(--on-brick)}
 .l3{background:var(--clinker);color:var(--on-brick)}
 .b.cur{outline:2px solid var(--fg);outline-offset:1px}
 
-.done{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+details.ref{border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+details.ref summary{cursor:pointer;padding:14px 16px;font-weight:800;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref summary::after{content:"+";color:var(--brick);font-weight:800}
+details.ref[open] summary::after{content:"–"}
+.ref-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:14px;font-size:14px}
+.ref-body p{margin:0;max-width:62ch}
+.ref-body h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.scroll{overflow-x:auto}
+.rt{border-collapse:collapse;width:100%;font-size:13px}
+.rt th,.rt td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.rt th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.rt td.g{font-family:var(--f-geo-sans);font-weight:600}
+.rt td.t{color:var(--muted)}
+.rt td.n{font-weight:800;font-variant-numeric:tabular-nums;color:var(--brick)}
+.ngrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 16px}
+.ngrid div{display:flex;gap:8px;align-items:baseline;border-bottom:1px solid var(--line);padding:3px 0;min-width:0}
+.ngrid b{width:28px;flex:none;text-align:right;font-variant-numeric:tabular-nums;color:var(--brick)}
+.ngrid .g{font-family:var(--f-geo-sans);font-weight:600}
+.ngrid .t{color:var(--muted);font-size:12px;margin-left:auto}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pbox{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);min-width:0}
+.pbox h4{margin:0 0 6px;font-size:13px}
+.pbox h4 b{font-family:var(--f-geo-sans);color:var(--brick);margin-right:6px}
+.pbox div{display:flex;justify-content:space-between;gap:6px;font-size:13px}
+.pbox div span:first-child{color:var(--muted);font-size:12px}
+.pbox div span:last-child{font-family:var(--f-geo-sans);font-weight:600}
+
+.done{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;min-height:340px;position:relative}
 .done .big{font-size:110px}
 .done p{margin:0;color:var(--muted)}
 .done button{background:var(--brick);color:var(--on-brick);border:none;border-radius:14px;padding:14px 22px;font:800 15px var(--f-ui);cursor:pointer}
-.foot{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);flex-wrap:wrap}
 .foot button{border:none;background:none;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;padding:0}
 @media (prefers-reduced-motion:reduce){.card{transition:none}.track div{transition:none}}
 </style>
 
-<div class="wrap">
+<div class="wrap" id="app">
   <header>
-    <div class="logo"><b>ანბანი</b> · анбани<small>грузинский алфавит карточками</small></div>
+    <div class="logo"><b>ანბანი</b> · анбани<small>буквы, числа и формы карточками</small></div>
     <div class="stats">
       <div class="chip" title="Опыт за всё время"><i>XP</i><span id="xp">0</span></div>
       <div class="chip" title="Верных ответов подряд"><i>серия</i><span id="streak">0</span></div>
     </div>
   </header>
 
+  <div class="tabs" role="tablist" id="tabs"></div>
+
   <nav class="units" id="units" aria-label="Юниты"></nav>
 
   <div class="bar">
     <span id="count">1 / 10</span>
     <div class="track"><div id="prog"></div></div>
-    <button class="dir" id="dir" title="Сменить направление">буква → звук</button>
+    <button class="dir" id="dir" title="Сменить направление"></button>
   </div>
 
-  <section id="session">
-    <div class="stage">
-      <div class="card" id="card" role="button" tabindex="0" aria-label="Перевернуть карточку">
-        <div class="face front" id="front"></div>
-        <div class="face back" id="back"></div>
-      </div>
-    </div>
-  </section>
+  <section id="session"></section>
 
   <div class="actions" id="actions"></div>
 
   <section>
     <div class="wall-head">
-      <h2>Стена букв <span id="mastered" style="color:var(--muted);font-weight:600"></span></h2>
+      <h2 id="wallTitle"></h2>
       <div class="legend">
         <span><i class="l0"></i>глина</span><span><i class="l1"></i>сырец</span><span><i class="l2"></i>обжиг</span><span><i class="l3"></i>клинкер</span>
       </div>
     </div>
-    <div class="wall" id="wall" style="margin-top:10px"></div>
+    <div class="wall" id="wall"></div>
   </section>
+
+  <div id="ref"></div>
 
   <div class="foot">
     <span>Пробел — перевернуть · ← не помню · → помню</span>
-    <button id="reset">Сбросить прогресс</button>
+    <button id="reset">Сбросить прогресс вкладки</button>
   </div>
 </div>
 
 <script>
-const L = [
- // буква, имя (рус), имя (груз), звук, подсказка, слово, транслит, перевод, юнит
+const $=id=>document.getElementById(id);
+const strip=s=>s.replace(/[\[\]]/g,"");
+
+/* ---------- БУКВЫ ---------- */
+const LET = [
  ["ა","ани","ანი","a","как «а» в «мама»","ამინდი","amindi","погода",0],
  ["ე","эни","ენი","e","как «э» в «эхо»","ენა","ena","язык",0],
  ["ი","ини","ინი","i","как «и» в «мир»","ივლისი","ivlisi","июль",0],
@@ -190,123 +266,315 @@ const L = [
  ["ხ","хани","ხანი","kh","как «х», чуть глубже","ხაჭაპური","khach'ap'uri","хачапури",3],
  ["ჰ","хаэ","ჰაე","h","лёгкий выдох, как английское h","ჰაერი","haeri","воздух",3],
 ].map((r,i)=>({i,ch:r[0],name:r[1],nameKa:r[2],snd:r[3],note:r[4],w:r[5],wt:r[6],wr:r[7],u:r[8]}));
-
-const UNITS=[
+const LET_UNITS=[
  {t:"Все 33",f:()=>true},
  {t:"1 · Гласные",f:c=>c.u===0},
  {t:"2 · Сонорные и шипящие",f:c=>c.u===1},
  {t:"3 · Тройки т/п/к",f:c=>c.u===2},
  {t:"4 · Аффрикаты и горловые",f:c=>c.u===3},
 ];
-const SESSION=12, KEY="anbani-v1";
-const $=id=>document.getElementById(id);
+LET_UNITS.forEach(u=>{const a=LET.filter(u.f);u.sub=a.slice(0,6).map(c=>c.ch).join(" ")+(a.length>6?" …":"")});
 
-let st={box:Array(33).fill(0),xp:0,unit:1,rev:false};
-try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.box&&s.box.length===33)st=Object.assign(st,s)}catch(e){}
+/* ---------- ЧИСЛА ---------- */
+const BASE=[null,
+ ["ერთი","erti"],["ორი","ori"],["სამი","sami"],["ოთხი","otkhi"],["ხუთი","khuti"],
+ ["ექვსი","ekvsi"],["შვიდი","shvidi"],["რვა","rva"],["ცხრა","tskhra"],["ათი","ati"],
+ ["თერთმეტი","tertmet'i"],["თორმეტი","tormet'i"],["ცამეტი","tsamet'i"],["თოთხმეტი","totkhmet'i"],["თხუთმეტი","tkhutmet'i"],
+ ["თექვსმეტი","tekvsmet'i"],["ჩვიდმეტი","chvidmet'i"],["თვრამეტი","tvramet'i"],["ცხრამეტი","tskhramet'i"],["ოცი","otsi"]];
+// двадцатки: [множитель, «двадцать»-часть, транслит]
+const TW={1:[["",""],["ოც","ots"]],2:[["ორ","or"],["მოც","mots"]],3:[["სამ","sam"],["ოც","ots"]],4:[["ოთხ","otkh"],["მოც","mots"]]};
+function numParts(n){
+  if(n===100) return {segs:[["ასი","r"]],tr:"asi",f:null};
+  if(n<=20) return {segs:[[BASE[n][0],"r"]],tr:BASE[n][1],f:null};
+  const k=Math.floor(n/20), r=n%20, [m,t]=TW[k];
+  const segs=[]; if(m[0])segs.push([m[0],"m"]);
+  if(r===0){segs.push([t[0]+"ი","t"]); return {segs,tr:m[1]+t[1]+"i",f:[k,0]}}
+  segs.push([t[0],"t"],["და","d"],[BASE[r][0],"r"]);
+  return {segs,tr:m[1]+t[1]+"da"+BASE[r][1],f:[k,r]};
+}
+const NUM=[];for(let n=1;n<=100;n++){const p=numParts(n);NUM.push({i:n-1,n,segs:p.segs,w:p.segs.map(s=>s[0]).join(""),tr:p.tr,f:p.f})}
+const segHTML=c=>c.segs.map(s=>`<span class="seg ${s[1]}">${s[0]}</span>`).join("");
+const NUM_UNITS=[
+ {t:"Все 1–100",sub:"вперемешку",f:()=>true},
+ {t:"1–10",sub:"ერთი … ათი",f:c=>c.n<=10},
+ {t:"11–20",sub:"…მეტი, ოცი",f:c=>c.n>10&&c.n<=20},
+ {t:"Круглые",sub:"20 30 … 100",f:c=>c.n>=20&&c.n%10===0},
+ {t:"21–40",sub:"ოცდა…",f:c=>c.n>20&&c.n<=40},
+ {t:"41–60",sub:"ორმოცდა…",f:c=>c.n>40&&c.n<=60},
+ {t:"61–80",sub:"სამოცდა…",f:c=>c.n>60&&c.n<=80},
+ {t:"81–100",sub:"ოთხმოცდა…",f:c=>c.n>80},
+];
+function numNote(c){
+  if(c.n<=10) return "Базовое число — основа для всего остального счёта.";
+  if(c.n<20) return "11–19: корень числа + ‑მეტი («сверх»): ათი → თ‑ + ‑ერთ‑ + ‑მეტი.";
+  if(c.n===100) return "ასი — отдельное слово, как «сто».";
+  if(c.f&&c.f[1]===0) return `${c.f[0]}×20. Круглая двадцатка заканчивается на ‑ი.`;
+  return `Двадцатка без ‑ი + და («и») + остаток от 1 до 19.`;
+}
+
+/* ---------- ФОРМЫ ---------- */
+const P_RU=["я","ты","он / она","мы","вы","они"];
+const PRON={
+ nom:[["მე","me"],["შენ","shen"],["ის","is"],["ჩვენ","chven"],["თქვენ","tkven"],["ისინი","isini"]],
+ dat:[["მე","me"],["შენ","shen"],["მას","mas"],["ჩვენ","chven"],["თქვენ","tkven"],["მათ","mat"]],
+ erg:[["მე","me"],["შენ","shen"],["მან","man"],["ჩვენ","chven"],["თქვენ","tkven"],["მათ","mat"]],
+};
+// [ ] — показатели лица (подсвечиваются)
+const VERBS=[
+ {id:"var",ka:"ვარ",ru:"быть",type:"A",cs:"nom",grp:1,
+  f:["[ვ]არ","ხარ","არი[ს]","[ვ]არ[თ]","ხარ[თ]","არი[ან]"],
+  t:["var","khar","aris","vart","khart","arian"],
+  ex:"სახლში",ru6:["я дома","ты дома","он/она дома","мы дома","вы дома","они дома"]},
+ {id:"mqavs",ka:"მყავს",ru:"иметь (живое: кошку, брата)",type:"B",cs:"dat",grp:2,
+  f:["[მ]ყავს","[გ]ყავს","[ჰ]ყავს","[გვ]ყავს","[გ]ყავ[თ]","[ჰ]ყავ[თ]"],
+  t:["mq'avs","gq'avs","hq'avs","gvq'avs","gq'avt","hq'avt"],
+  ex:"ძაღლი",ru6:["у меня есть собака","у тебя есть собака","у него/неё есть собака","у нас есть собака","у вас есть собака","у них есть собака"]},
+ {id:"makvs",ka:"მაქვს",ru:"иметь (вещь: машину, время)",type:"B",cs:"dat",grp:2,
+  f:["[მ]აქვს","[გ]აქვს","აქვს","[გვ]აქვს","[გ]აქვ[თ]","აქვ[თ]"],
+  t:["makvs","gakvs","akvs","gvakvs","gakvt","akvt"],
+  ex:"მანქანა",ru6:["у меня есть машина","у тебя есть машина","у него/неё есть машина","у нас есть машина","у вас есть машина","у них есть машина"]},
+ {id:"minda",ka:"მინდა",ru:"хотеть",type:"B",cs:"dat",grp:3,
+  f:["[მ]ინდა","[გ]ინდა","[უ]ნდა","[გვ]ინდა","[გ]ინდა[თ]","[უ]ნდა[თ]"],
+  t:["minda","ginda","unda","gvinda","gindat","undat"],
+  ex:"ყავა",ru6:["я хочу кофе","ты хочешь кофе","он/она хочет кофе","мы хотим кофе","вы хотите кофе","они хотят кофе"]},
+ {id:"miqvars",ka:"მიყვარს",ru:"любить",type:"B",cs:"dat",grp:3,
+  f:["[მ]იყვარს","[გ]იყვარს","[უ]ყვარს","[გვ]იყვარს","[გ]იყვარ[თ]","[უ]ყვარ[თ]"],
+  t:["miq'vars","giq'vars","uq'vars","gviq'vars","giq'vart","uq'vart"],
+  ex:"საქართველო",ru6:["я люблю Грузию","ты любишь Грузию","он/она любит Грузию","мы любим Грузию","вы любите Грузию","они любят Грузию"]},
+ {id:"momtsons",ka:"მომწონს",ru:"нравиться",type:"B",cs:"dat",grp:3,
+  f:["მო[მ]წონს","მო[გ]წონს","მო[ს]წონს","მო[გვ]წონს","მო[გ]წონ[თ]","მო[ს]წონ[თ]"],
+  t:["momts'ons","mogts'ons","mosts'ons","mogvts'ons","mogts'ont","mosts'ont"],
+  ex:"თბილისი",ru6:["мне нравится Тбилиси","тебе нравится Тбилиси","ему/ей нравится Тбилиси","нам нравится Тбилиси","вам нравится Тбилиси","им нравится Тбилиси"]},
+ {id:"mkvia",ka:"მქვია",ru:"зваться («меня зовут»)",type:"B",cs:"dat",grp:4,
+  f:["[მ]ქვია","[გ]ქვია","[ჰ]ქვია","[გვ]ქვია","[გ]ქვია[თ]","[ჰ]ქვია[თ]"],
+  t:["mkvia","gkvia","hkvia","gvkvia","gkviat","hkviat"],
+  ex:"რა",q:true,ru6:["как меня зовут?","как тебя зовут?","как его/её зовут?","как нас зовут?","как вас зовут?","как их зовут?"]},
+ {id:"mchirdeba",ka:"მჭირდება",ru:"нуждаться («мне нужно»)",type:"B",cs:"dat",grp:4,
+  f:["[მ]ჭირდება","[გ]ჭირდება","[ს]ჭირდება","[გვ]ჭირდება","[გ]ჭირდება[თ]","[ს]ჭირდება[თ]"],
+  t:["mch'irdeba","gch'irdeba","sch'irdeba","gvch'irdeba","gch'irdebat","sch'irdebat"],
+  ex:"დახმარება",ru6:["мне нужна помощь","тебе нужна помощь","ему/ей нужна помощь","нам нужна помощь","вам нужна помощь","им нужна помощь"]},
+ {id:"vitsi",ka:"ვიცი",ru:"знать",type:"A",cs:"erg",grp:5,
+  f:["[ვ]იცი","იცი","იცი[ს]","[ვ]იცი[თ]","იცი[თ]","იცი[ან]"],
+  t:["vitsi","itsi","itsis","vitsit","itsit","itsian"],
+  ex:"ეს",ru6:["я это знаю","ты это знаешь","он/она это знает","мы это знаем","вы это знаете","они это знают"]},
+ {id:"mivdivar",ka:"მივდივარ",ru:"идти (туда)",type:"A",cs:"nom",grp:5,
+  f:["მი[ვ]დივარ","მიდიხარ","მიდი[ს]","მი[ვ]დივარ[თ]","მიდიხარ[თ]","მიდი[ან]"],
+  t:["mivdivar","midikhar","midis","mivdivart","midikhart","midian"],
+  ex:"სახლში",ru6:["я иду домой","ты идёшь домой","он/она идёт домой","мы идём домой","вы идёте домой","они идут домой"]},
+ {id:"vtskhovrob",ka:"ვცხოვრობ",ru:"жить",type:"A",cs:"nom",grp:6,
+  f:["[ვ]ცხოვრობ","ცხოვრობ","ცხოვრობ[ს]","[ვ]ცხოვრობ[თ]","ცხოვრობ[თ]","ცხოვრობ[ენ]"],
+  t:["vtskhovrob","tskhovrob","tskhovrobs","vtskhovrobt","tskhovrobt","tskhovroben"],
+  ex:"თბილისში",ru6:["я живу в Тбилиси","ты живёшь в Тбилиси","он/она живёт в Тбилиси","мы живём в Тбилиси","вы живёте в Тбилиси","они живут в Тбилиси"]},
+ {id:"vlaparakob",ka:"ვლაპარაკობ",ru:"говорить",type:"A",cs:"nom",grp:6,
+  f:["[ვ]ლაპარაკობ","ლაპარაკობ","ლაპარაკობ[ს]","[ვ]ლაპარაკობ[თ]","ლაპარაკობ[თ]","ლაპარაკობ[ენ]"],
+  t:["vlap'arak'ob","lap'arak'ob","lap'arak'obs","vlap'arak'obt","lap'arak'obt","lap'arak'oben"],
+  ex:"ქართულად",ru6:["я говорю по-грузински","ты говоришь по-грузински","он/она говорит по-грузински","мы говорим по-грузински","вы говорите по-грузински","они говорят по-грузински"]},
+];
+const FORMS=[];VERBS.forEach(v=>v.f.forEach((f,p)=>FORMS.push({i:FORMS.length,v,p,f,w:strip(f),tr:v.t[p]})));
+const markF=(f,type)=>f.replace(/\[(.+?)\]/g,`<mark class="m${type}">$1</mark>`);
+const FORM_UNITS=[
+ {t:"Все формы",sub:"12 глаголов",f:()=>true},
+ {t:"Быть",sub:"ვარ · ხარ · არის",f:c=>c.v.grp===1},
+ {t:"Иметь",sub:"მყავს · მაქვს",f:c=>c.v.grp===2},
+ {t:"Хотеть · любить",sub:"მინდა · მიყვარს · მომწონს",f:c=>c.v.grp===3},
+ {t:"Зовут · нужно",sub:"მქვია · მჭირდება",f:c=>c.v.grp===4},
+ {t:"Знать · идти",sub:"ვიცი · მივდივარ",f:c=>c.v.grp===5},
+ {t:"Жить · говорить",sub:"ვცხოვრობ · ვლაპარაკობ",f:c=>c.v.grp===6},
+ {t:"Тип «ვ-»",sub:"я делаю",f:c=>c.v.type==="A"},
+ {t:"Тип «მ-»",sub:"мне …",f:c=>c.v.type==="B"},
+];
+function exSentence(v,p){
+  const pr=PRON[v.cs][p][0], form=v.f[p];
+  const body=v.q?`${v.ex} ${markF(form,v.type)}?`:`${v.ex} ${markF(form,v.type)}`;
+  return `<span class="g">${pr} ${body}</span><br><span class="r">${v.ru6[p]}</span>`;
+}
+
+/* ---------- КОЛОДЫ ---------- */
+const DECKS={
+ letters:{
+  tab:"Буквы",tabKa:"ანბანი",items:LET,units:LET_UNITS,session:12,cols:11,
+  dir:["буква → звук","звук → буква"],wall:"Стена букв",
+  label:c=>c.ch,tip:c=>`${c.ch} — ${c.name} [${c.snd}]`,say:c=>c.w,
+  front(c,rev){return rev
+    ?`<span class="tag">какая буква?</span><div class="sound-front">${c.snd}<small>${c.name} · ${c.note}</small></div><span class="hint">нажмите, чтобы увидеть букву</span>`
+    :`<span class="tag">какой звук?</span><div class="big">${c.ch}</div><span class="hint">нажмите или пробел, чтобы перевернуть</span>`},
+  back(c){const hl=[...c.w].map(x=>x===c.ch?`<mark>${x}</mark>`:x).join("");
+   return `<span class="tag">${LET_UNITS[c.u+1].t}</span><span class="tag r">${c.i+1} / 33</span>
+    <div class="row"><div class="mid">${c.ch}</div><div class="meta"><div class="name">${c.name}<em>${c.nameKa}</em></div><div class="ipa">звук <b>[${c.snd}]</b></div></div></div>
+    <div class="note">${c.note}</div>
+    <div class="word"><div class="w">${hl}</div><div class="tr"><b>${c.wt}</b> — ${c.wr}</div>${sayBtn()}</div>`},
+  ref:()=>""
+ },
+ numbers:{
+  tab:"Числа",tabKa:"1–100",items:NUM,units:NUM_UNITS,session:15,cols:10,
+  dir:["число → слово","слово → число"],wall:"Стена чисел",
+  label:c=>c.n,tip:c=>`${c.n} — ${c.w} (${c.tr})`,say:c=>c.w,
+  front(c,rev){return rev
+    ?`<span class="tag">какое число?</span><div class="geo-word">${c.w}</div><span class="hint">нажмите, чтобы увидеть ответ</span>`
+    :`<span class="tag">как сказать?</span><div class="num-big">${c.n}</div><span class="hint">нажмите или пробел, чтобы перевернуть</span>`},
+  back(c){
+   const f=c.f?(c.f[1]===0
+     ?`<div class="formula"><span>${c.f[0]}</span><span class="op">×</span><span>20</span></div>`
+     :`<div class="formula">${c.f[0]>1?`<span>${c.f[0]}</span><span class="op">×</span>`:""}<span>20</span><span class="op">+</span><span>${c.f[1]}</span></div>`):"";
+   return `<span class="tag">${unitOf("numbers",c)}</span><span class="tag r">${c.n} / 100</span>
+    <div class="num-mid">${c.n}</div>
+    <div class="geo-word" style="margin-top:14px">${segHTML(c)}</div>
+    <div class="ans-tr" style="font-size:16px;margin-top:4px"><b style="color:var(--fg)">${c.tr}</b></div>
+    ${f}
+    <div class="note">${numNote(c)}</div>${sayBtn()}`},
+  ref:numRef
+ },
+ forms:{
+  tab:"Формы",tabKa:"მე · შენ",items:FORMS,units:FORM_UNITS,session:12,cols:6,
+  dir:["лицо → форма","форма → лицо"],wall:"Стена форм",
+  label:c=>c.w,tip:c=>`${P_RU[c.p]} — ${c.w} (${c.tr})`,say:c=>`${PRON[c.v.cs][c.p][0]} ${c.w}`,
+  front(c,rev){const pr=PRON[c.v.cs][c.p];return rev
+    ?`<span class="tag">кто и что?</span><div class="pron" style="font-family:var(--f-geo-sans);font-weight:700;font-size:clamp(40px,12vw,56px)">${c.w}</div><span class="hint">нажмите, чтобы увидеть ответ</span>`
+    :`<span class="tag">какая форма?</span>
+      <div class="vchip"><b>${c.v.ka}</b>${c.v.ru}</div>
+      <div class="pron">${pr[0]}</div>
+      <div class="pron-ru">${P_RU[c.p]}<small>${pr[1]}</small></div>
+      <span class="hint">нажмите или пробел, чтобы перевернуть</span>`},
+  back(c){const v=c.v,pr=PRON[v.cs][c.p];
+   const rows=v.f.map((f,p)=>`<tr class="${p===c.p?"on":""}"><td>${P_RU[p]}</td><td>${PRON[v.cs][p][0]}</td><td>${markF(f,v.type)}</td><td>${v.t[p]}</td></tr>`).join("");
+   return `<span class="tag">${v.ka} · ${v.ru.split(" (")[0]}</span><span class="tag r">тип ${v.type==="A"?"ვ-":"მ-"}</span>
+    <div class="ans"><span class="p">${pr[0]}</span>${markF(c.f,v.type)}</div>
+    <div class="ans-tr">${pr[1]} <b style="color:var(--fg)">${c.tr}</b> · ${P_RU[c.p]}</div>
+    <table class="para">${rows}</table>
+    <div class="ex">${exSentence(v,c.p)}</div>${sayBtn()}`},
+  ref:formsRef
+ }
+};
+function unitOf(d,c){const u=DECKS[d].units.find((u,k)=>k>0&&u.f(c));return u?u.t:""}
+
+/* ---------- СПРАВКА ---------- */
+function numRef(){
+  const one=n=>`<div><b>${n}</b><span class="g">${NUM[n-1].w}</span><span class="t">${NUM[n-1].tr}</span></div>`;
+  const tw=[20,40,60,80,100].map(one).join("");
+  return `<details class="ref"><summary>Как устроен счёт до 100</summary><div class="ref-body">
+   <p>Грузинский считает двадцатками, как французское <i>quatre-vingts</i>. Выучите 1–20 и четыре двадцатки, и любое число до 100 собирается по одной схеме.</p>
+   <h3>1–20</h3><div class="ngrid">${Array.from({length:20},(_,i)=>one(i+1)).join("")}</div>
+   <h3>Двадцатки</h3><div class="ngrid">${tw}</div>
+   <h3>Схема</h3>
+   <p><b>двадцатка без ‑ი</b> + <b class="ka">და</b> («и») + <b>остаток 1–19</b></p>
+   <div class="scroll"><table class="rt"><tr><th>число</th><th>разбор</th><th>по-грузински</th></tr>
+    ${[25,37,48,59,66,75,83,99].map(n=>{const c=NUM[n-1];return `<tr><td class="n">${n}</td><td class="t">${c.f[0]>1?c.f[0]+"×":""}20 + ${c.f[1]}</td><td class="g">${segHTML(c)}<br><span class="t" style="font-family:var(--f-ui);font-weight:400">${c.tr}</span></td></tr>`}).join("")}
+   </table></div>
+  </div></details>`;
+}
+function formsRef(){
+  const box=v=>`<div class="pbox"><h4><b>${v.ka}</b>${v.ru.split(" (")[0]}</h4>${v.f.map((f,p)=>`<div><span>${PRON[v.cs][p][0]}</span><span>${markF(f,v.type)}</span></div>`).join("")}</div>`;
+  return `<details class="ref"><summary>Как работают формы</summary><div class="ref-body">
+   <p>У грузинского глагола лицо показывают приставки и окончания. Есть два набора.</p>
+   <div class="scroll"><table class="rt">
+    <tr><th></th><th>Тип <mark class="mA">ვ-</mark>: «я делаю»</th><th>Тип <mark class="mB">მ-</mark>: «мне …»</th></tr>
+    <tr><td>я</td><td class="g"><mark class="mA">ვ</mark>‑…</td><td class="g"><mark class="mB">მ</mark>‑…</td></tr>
+    <tr><td>ты</td><td class="g">—</td><td class="g"><mark class="mB">გ</mark>‑…</td></tr>
+    <tr><td>он/она</td><td class="g">…‑<mark class="mA">ს</mark></td><td class="g"><mark class="mB">ჰ/ს/უ</mark>‑… или —</td></tr>
+    <tr><td>мы</td><td class="g"><mark class="mA">ვ</mark>‑…‑<mark class="mA">თ</mark></td><td class="g"><mark class="mB">გვ</mark>‑…</td></tr>
+    <tr><td>вы</td><td class="g">…‑<mark class="mA">თ</mark></td><td class="g"><mark class="mB">გ</mark>‑…‑<mark class="mB">თ</mark></td></tr>
+    <tr><td>они</td><td class="g">…‑<mark class="mA">ენ/ან</mark></td><td class="g"><mark class="mB">ჰ/ს/უ</mark>‑…‑<mark class="mB">თ</mark></td></tr>
+   </table></div>
+   <p><b>Тип <span class="ka">მ-</span></b> устроен как русское «мне нравится»: тот, кто «имеет» или «хочет», стоит в дательном падеже. Поэтому «он» здесь <span class="ka">მას</span>, а «они» <span class="ka">მათ</span>, а не <span class="ka">ის / ისინი</span>.</p>
+   <p><b class="ka">მყავს</b> говорят про живых (<span class="ka">ძმა მყავს</span>, «у меня есть брат»), <b class="ka">მაქვს</b> про вещи и абстрактное (<span class="ka">დრო მაქვს</span>, «у меня есть время»).</p>
+   <p>У <span class="ka">ვიცი</span> «он/они» стоят в эргативе: <span class="ka">მან იცის, მათ იციან</span>.</p>
+   <h3>Все таблицы</h3>
+   <div class="pgrid">${VERBS.map(box).join("")}</div>
+  </div></details>`;
+}
+
+/* ---------- СОСТОЯНИЕ ---------- */
+const KEY="anbani-v2";
+let st={xp:0,deck:"letters",box:{},unit:{letters:1,numbers:1,forms:1},rev:{}};
+try{
+  const s=JSON.parse(localStorage.getItem(KEY));
+  if(s&&s.box) st=Object.assign(st,s);
+  else{const o=JSON.parse(localStorage.getItem("anbani-v1"));if(o&&o.box&&o.box.length===33){st.box.letters=o.box;st.xp=o.xp||0;st.unit.letters=o.unit??1;st.rev.letters=!!o.rev}}
+}catch(e){}
+Object.keys(DECKS).forEach(d=>{if(!st.box[d]||st.box[d].length!==DECKS[d].items.length)st.box[d]=Array(DECKS[d].items.length).fill(0)});
+const h=(location.hash||"").slice(1);if(DECKS[h])st.deck=h;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 
 let queue=[],pos=0,total=0,flipped=false,streak=0,right=0,cur=null;
-
-function lvl(b){return b>=4?3:b>=2?2:b>=1?1:0}
+const D=()=>DECKS[st.deck], BOX=()=>st.box[st.deck];
+const lvl=b=>b>=4?3:b>=2?2:b>=1?1:0;
 
 function build(){
-  const pool=L.filter(UNITS[st.unit].f);
-  // слабые сначала, внутри уровня — случайно
-  const sorted=pool.map(c=>({c,k:st.box[c.i]+Math.random()*.9})).sort((a,b)=>a.k-b.k).map(x=>x.c);
-  queue=sorted.slice(0,Math.min(SESSION,pool.length));
+  const pool=D().items.filter(D().units[st.unit[st.deck]].f);
+  const sorted=pool.map(c=>({c,k:BOX()[c.i]+Math.random()*.9})).sort((a,b)=>a.k-b.k).map(x=>x.c);
+  queue=sorted.slice(0,Math.min(D().session,pool.length));
   total=queue.length;pos=0;right=0;
   next();
 }
-
-function hl(word,ch){return [...word].map(x=>x===ch?`<mark>${x}</mark>`:x).join("")}
-
-function render(){
-  const c=cur;
-  const front = st.rev
-    ? `<span class="tag">какая буква?</span><div class="sound-front">${c.snd}<small>${c.name} · ${c.note}</small></div><span class="hint">нажмите, чтобы увидеть букву</span>`
-    : `<span class="tag">какой звук?</span><div class="big">${c.ch}</div><span class="hint">нажмите или пробел, чтобы перевернуть</span>`;
-  $("front").innerHTML=front;
-  $("back").innerHTML=`
-    <span class="tag">${UNITS[c.u+1].t}</span><span class="tag r">${c.i+1} / 33</span>
-    <div class="row"><div class="mid">${c.ch}</div>
-      <div class="meta"><div class="name">${c.name}<em>${c.nameKa}</em></div><div class="ipa">звук <b>[${c.snd}]</b></div></div></div>
-    <div class="note">${c.note}</div>
-    <div class="word"><div class="ka">${hl(c.w,c.ch)}</div><div class="tr"><b>${c.wt}</b> — ${c.wr}</div>
-    ${voice?`<button class="say" id="say">▶ послушать</button>`:""}</div>`;
-  if(voice){$("say").onclick=e=>{e.stopPropagation();speak(c.w)}}
-}
-
+function render(){$("front").innerHTML=D().front(cur,!!st.rev[st.deck]);$("back").innerHTML=D().back(cur);
+  const s=$("say");if(s)s.onclick=e=>{e.stopPropagation();speak(D().say(cur))}}
 function next(){
-  if(pos>=queue.length){return finish()}
-  cur=queue[pos];flipped=false;$("card").classList.remove("flipped");
-  setTimeout(render, document.getElementById("card").dataset.ready?180:0);
-  $("card").dataset.ready=1;
+  if(pos>=queue.length)return finish();
+  cur=queue[pos];const card=$("card");const was=card.classList.contains("flipped");
+  flipped=false;card.classList.remove("flipped");
+  if(was)setTimeout(render,180);else render();
   actions();ui();
 }
-
-function flip(){flipped=!flipped;$("card").classList.toggle("flipped",flipped);actions()}
-
+function flip(){if(pos>=queue.length)return;flipped=!flipped;$("card").classList.toggle("flipped",flipped);actions()}
 function grade(ok){
-  if(!flipped)return;
-  const i=cur.i;
-  if(ok){st.box[i]=Math.min(5,st.box[i]+1);st.xp+=10;streak++;right++;pos++}
-  else{st.box[i]=Math.max(0,st.box[i]-1);streak=0;
-    // вернуть карточку через 3 позиции
-    queue.splice(Math.min(queue.length,pos+4),0,cur);pos++;total++}
+  if(!flipped||pos>=queue.length)return;
+  const b=BOX(),i=cur.i;
+  if(ok){b[i]=Math.min(5,b[i]+1);st.xp+=10;streak++;right++;pos++}
+  else{b[i]=Math.max(0,b[i]-1);streak=0;queue.splice(Math.min(queue.length,pos+4),0,cur);pos++;total++}
   save();next();
 }
-
 function actions(){
   const a=$("actions");
   if(pos>=queue.length){a.innerHTML="";return}
-  a.innerHTML = flipped
-   ? `<button class="no" id="bn">Не помню<kbd>←</kbd></button><button class="yes" id="by">Помню<kbd>→</kbd></button>`
-   : `<button class="flipbtn" id="bf">Показать ответ<kbd>пробел</kbd></button>`;
-  if(flipped){$("bn").onclick=()=>grade(false);$("by").onclick=()=>grade(true)}
-  else $("bf").onclick=flip;
+  a.innerHTML=flipped
+   ?`<button class="no" id="bn">Не помню<kbd>←</kbd></button><button class="yes" id="by">Помню<kbd>→</kbd></button>`
+   :`<button class="flipbtn" id="bf">Показать ответ<kbd>пробел</kbd></button>`;
+  if(flipped){$("bn").onclick=()=>grade(false);$("by").onclick=()=>grade(true)}else $("bf").onclick=flip;
 }
-
 function finish(){
-  $("session").innerHTML=`<div class="face done" style="position:relative;min-height:340px">
-    <div class="big">ჰო!</div><p><b style="color:var(--fg)">ho!</b> — «да!» Круг пройден: ${right} букв, повторов после ошибки — ${total-right}.</p>
-    <button id="again">Ещё круг</button></div>`;
-  $("actions").innerHTML="";
-  $("again").onclick=restart;ui();
+  $("session").innerHTML=`<div class="face done"><div class="big">ჰო!</div><p><b style="color:var(--fg)">ho!</b> («да!») Круг пройден: ${right} карточек, повторов после ошибки ${total-right}.</p><button id="again">Ещё круг</button></div>`;
+  $("actions").innerHTML="";$("again").onclick=restart;ui();
 }
-
 function restart(){
   $("session").innerHTML=`<div class="stage"><div class="card" id="card" role="button" tabindex="0" aria-label="Перевернуть карточку"><div class="face front" id="front"></div><div class="face back" id="back"></div></div></div>`;
   $("card").onclick=flip;$("card").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();flip()}};
+  $("app").className="wrap deck-"+st.deck;
+  $("ref").innerHTML=D().ref();
   build();
 }
-
 function ui(){
+  const d=D();
   $("xp").textContent=st.xp;$("streak").textContent=streak;
   const done=Math.min(pos,queue.length);
   $("count").textContent=`${Math.min(done+1,queue.length)} / ${queue.length}`;
   $("prog").style.width=(queue.length?done/queue.length*100:0)+"%";
-  $("dir").textContent=st.rev?"звук → буква":"буква → звук";
-  $("units").innerHTML=UNITS.map((u,k)=>`<button class="unit" aria-pressed="${k===st.unit}" data-k="${k}">${u.t}<span>${L.filter(u.f).slice(0,6).map(c=>c.ch).join(" ")}${L.filter(u.f).length>6?" …":""}</span></button>`).join("");
-  $("units").querySelectorAll(".unit").forEach(b=>b.onclick=()=>{st.unit=+b.dataset.k;save();restart()});
-  $("wall").innerHTML=L.map(c=>`<div class="b l${lvl(st.box[c.i])}${cur&&cur.i===c.i&&pos<queue.length?" cur":""}" title="${c.ch} — ${c.name} [${c.snd}]">${c.ch}</div>`).join("");
-  const m=st.box.filter(b=>b>=4).length;
-  $("mastered").textContent=`· клинкер ${m} из 33`;
+  $("dir").textContent=d.dir[st.rev[st.deck]?1:0];
+  $("tabs").innerHTML=Object.entries(DECKS).map(([k,v])=>`<button class="tab" role="tab" aria-selected="${k===st.deck}" data-d="${k}">${v.tab}<span>${v.tabKa}</span></button>`).join("");
+  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{if(st.deck===b.dataset.d)return;st.deck=b.dataset.d;streak=0;save();try{history.replaceState(null,"","#"+st.deck)}catch(e){}restart();window.scrollTo({top:0})});
+  $("units").innerHTML=d.units.map((u,k)=>`<button class="unit" aria-pressed="${k===st.unit[st.deck]}" data-k="${k}">${u.t}<span>${u.sub}</span></button>`).join("");
+  $("units").querySelectorAll(".unit").forEach(b=>b.onclick=()=>{st.unit[st.deck]=+b.dataset.k;save();restart()});
+  const box=BOX(),live=pos<queue.length&&cur;
+  $("wall").style.gridTemplateColumns=`repeat(${d.cols},minmax(0,1fr))`;
+  $("wall").innerHTML=d.items.map(c=>`<div class="b l${lvl(box[c.i])}${live&&cur.i===c.i?" cur":""}" title="${d.tip(c)}">${d.label(c)}</div>`).join("");
+  $("wallTitle").innerHTML=`${d.wall} <span>· клинкер ${box.filter(b=>b>=4).length} из ${d.items.length}</span>`;
 }
 
-// озвучка — только если в системе есть грузинский голос
+/* озвучка — только если в системе есть грузинский голос */
 let voice=null;
+const sayBtn=()=>voice?`<button class="say" id="say">▶ послушать</button>`:"";
 function pickVoice(){try{voice=speechSynthesis.getVoices().find(v=>/^ka/i.test(v.lang))||null}catch(e){voice=null}}
 function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.voice=voice;u.lang="ka-GE";u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=()=>{pickVoice();if(cur&&pos<queue.length)render()}}
 
-$("dir").onclick=()=>{st.rev=!st.rev;save();restart()};
+$("dir").onclick=()=>{st.rev[st.deck]=!st.rev[st.deck];save();restart()};
 $("reset").onclick=e=>{
-  if(e.target.dataset.c){st.box=Array(33).fill(0);st.xp=0;save();e.target.textContent="Сбросить прогресс";delete e.target.dataset.c;restart()}
-  else{e.target.dataset.c=1;e.target.textContent="Точно сбросить? Нажмите ещё раз"}
+  const b=e.target;
+  if(b.dataset.c){st.box[st.deck]=Array(D().items.length).fill(0);save();b.textContent="Сбросить прогресс вкладки";delete b.dataset.c;restart()}
+  else{b.dataset.c=1;b.textContent="Точно сбросить? Нажмите ещё раз"}
 };
 document.addEventListener("keydown",e=>{
-  const onBtn=e.target.closest&&e.target.closest("button");
-  if(e.code==="Space"&&!onBtn){e.preventDefault();if(pos<queue.length)flip()}
+  const onBtn=e.target.closest&&e.target.closest("button,summary");
+  if(e.code==="Space"&&!onBtn){e.preventDefault();flip()}
   else if(e.key==="ArrowLeft"||e.key==="1")grade(false);
   else if(e.key==="ArrowRight"||e.key==="2")grade(true);
 });
